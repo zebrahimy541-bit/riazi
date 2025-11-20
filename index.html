@@ -1,43 +1,195 @@
 <!DOCTYPE html>
-<html lang="fa">
+<html lang="fa" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <title>????????? ???</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>آزمایشگاه جذر — پایه نهم</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #111827;
+      --text: #e5e7eb;
+      --accent: #22d3ee;
+      --muted: #9ca3af;
+      --error: #ef4444;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; font-family: Vazirmatn, system-ui, Arial;
+      background: radial-gradient(1200px 800px at 70% -20%, #0ea5e9 0%, transparent 40%),
+                  radial-gradient(800px 500px at -10% 120%, #22d3ee 0%, transparent 35%), var(--bg);
+      color: var(--text);
+    }
+    .container { max-width: 720px; margin: 0 auto; padding: 32px 20px 60px; }
+    header { text-align: center; margin-bottom: 24px; }
+    h1 { margin: 0 0 8px; font-size: 28px; letter-spacing: -0.5px; }
+    p.lead { margin: 0; color: var(--muted); }
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255,255,255,0.12);
+      backdrop-filter: blur(6px);
+      border-radius: 16px; padding: 20px; margin-top: 18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+    }
+    label { display: block; margin-bottom: 8px; font-weight: 600; }
+    .row { display: grid; grid-template-columns: 1fr auto; gap: 12px; }
+    input[type="text"] {
+      width: 100%; padding: 12px 14px; border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(17,24,39,0.6); color: var(--text);
+      outline: none;
+    }
+    input[type="text"]:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.25); }
+    button {
+      padding: 12px 16px; border-radius: 12px; border: none; cursor: pointer;
+      background: linear-gradient(90deg, #22d3ee, #0ea5e9);
+      color: #0b1020; font-weight: 700;
+    }
+    button.secondary {
+      background: transparent; color: var(--text);
+      border: 1px solid rgba(255,255,255,0.18);
+    }
+    .result { margin-top: 16px; line-height: 1.9; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .muted { color: var(--muted); }
+    .error { color: var(--error); font-weight: 600; }
+    .grid {
+      display: grid; gap: 10px; grid-template-columns: repeat(2, minmax(0, 1fr));
+      margin-top: 14px;
+    }
+    .pill {
+      border: 1px dashed rgba(255,255,255,0.18);
+      border-radius: 12px; padding: 10px 12px; background: rgba(17,24,39,0.45);
+    }
+    footer { margin-top: 28px; text-align: center; color: var(--muted); font-size: 13px; }
+    @media (max-width: 560px) { .grid { grid-template-columns: 1fr; } }
+  </style>
 </head>
 <body>
-  <h1>?? ????????? ?????? ???</h1>
-  <p>?? ??? ???? ????:</p>
-  
-  <!-- ????? ??? -->
-  <input type="number" id="numberInput" placeholder="????? 4 ?? 5">
-  
-  <!-- ???? ?????? -->
-  <button onclick="calculateSqrt()">?????? ???</button>
-  
-  <!-- ????? ????? -->
-  <p id="result"></p>
+  <div class="container">
+    <header>
+      <h1>آزمایشگاه جذر — پایه نهم</h1>
+      <p class="lead">ورودی: عدد صحیح یا گویا (مثلاً 25 یا 3/4). خروجی: جذر تقریبی و بازه بین دو عدد صحیح.</p>
+    </header>
 
-  <!-- ????? ?? ???? ??????????? -->
+    <section class="card" aria-label="ورودی و خروجی">
+      <label for="input">ورودی عدد (صحیح یا کسری به صورت a/b)</label>
+      <div class="row">
+        <input id="input" type="text" placeholder="مثال‌ها: 20 ، 2/3 ، 5.75" />
+        <button id="calcBtn">محاسبه جذر</button>
+      </div>
+      <div class="grid">
+        <button id="examplesBtn" class="secondary">نمونه‌ها</button>
+        <button id="clearBtn" class="secondary">پاک‌سازی</button>
+      </div>
+
+      <div id="result" class="result" aria-live="polite"></div>
+    </section>
+
+    <section class="card" aria-label="توضیحات">
+      <strong>نکته:</strong>
+      <p class="muted">
+        اگر جذر دقیقاً عدد صحیح باشد، همان عدد نمایش داده می‌شود. اگر اعشاری باشد، بازهٔ بین دو عدد صحیح
+        با استفاده از کف و سقف مقدار جذر مشخص می‌گردد.
+      </p>
+      <div class="pill mono">
+        floor(√x) ≤ √x ≤ ceil(√x)
+      </div>
+    </section>
+
+    <footer>
+      ساخته‌شده برای تمرین ریاضی پایه نهم — می‌توانید این فایل را به عنوان <span class="mono">index.html</span> در گیت‌هاب پیجز منتشر کنید.
+    </footer>
+  </div>
+
   <script>
-    function calculateSqrt() {
-      let num = document.getElementById("numberInput").value;
-      let resultElement = document.getElementById("result");
+    // تبدیل رشته ورودی به عدد: پشتیبانی از "a/b", "a", "a.b"
+    function parseInput(str) {
+      const s = (str || "").trim();
+      if (!s) throw new Error("ورودی خالی است.");
 
-      if (num === "") {
-        resultElement.innerHTML = "?? ????? ?? ??? ???? ????.";
-        return;
+      // اگر کسری به صورت a/b
+      if (s.includes("/")) {
+        const parts = s.split("/").map(p => p.trim());
+        if (parts.length !== 2 || parts[0] === "" || parts[1] === "") {
+          throw new Error("فرمت کسر نامعتبر است. مثال درست: 3/4");
+        }
+        const a = Number(parts[0]);
+        const b = Number(parts[1]);
+        if (!isFinite(a) || !isFinite(b)) throw new Error("صورت یا مخرج عددی نیست.");
+        if (b === 0) throw new Error("تقسیم بر صفر مجاز نیست.");
+        return a / b;
       }
 
-      num = parseInt(num);
-      let sqrt = Math.sqrt(num);
-
-      if (Number.isInteger(sqrt)) {
-        resultElement.innerHTML = `? ??? ???? ${num} ????? ${sqrt} ???.`;
-      } else {
-        resultElement.innerHTML = `?? ??? ?????? ${num} ????? ${sqrt.toFixed(2)} ???.`;
-      }
+      // در غیر این صورت عدد معمولی
+      const n = Number(s.replace(/[٫٬،]/g, "."));
+      if (!isFinite(n)) throw new Error("ورودی عددی نیست.");
+      return n;
     }
+
+    // محاسبه نتیجه و ساخت متن خروجی
+    function sqrtInterval(num) {
+      if (num < 0) {
+        return `<span class="error">برای اعداد منفی جذر حقیقی تعریف نمی‌شود.</span>`;
+      }
+
+      const root = Math.sqrt(num);
+
+      // بررسی صحیح بودن دقیق
+      if (Number.isInteger(root)) {
+        return `جذر <span class="mono">${formatNum(num)}</span> برابر با <strong>${root}</strong> است.`;
+      }
+
+      const lower = Math.floor(root);
+      const upper = Math.ceil(root);
+
+      // قالب خروجی با چهار رقم اعشار
+      const approx = root.toFixed(4);
+
+      return `
+        <div>جذر <span class="mono">${formatNum(num)}</span> تقریباً <strong>${approx}</strong> است.</div>
+        <div>این مقدار بین <strong>${lower}</strong> و <strong>${upper}</strong> قرار دارد.</div>
+      `;
+    }
+
+    // قالب‌بندی نمایش اعداد (حذف صفرهای اضافی)
+    function formatNum(x) {
+      const s = String(x);
+      return s.includes(".") ? Number(x).toString() : s;
+    }
+
+    // کنترل‌های رابط
+    const inputEl = document.getElementById("input");
+    const resultEl = document.getElementById("result");
+    const calcBtn = document.getElementById("calcBtn");
+    const clearBtn = document.getElementById("clearBtn");
+    const examplesBtn = document.getElementById("examplesBtn");
+
+    calcBtn.addEventListener("click", () => {
+      try {
+        const num = parseInput(inputEl.value);
+        resultEl.innerHTML = sqrtInterval(num);
+      } catch (err) {
+        resultEl.innerHTML = `<span class="error">${err.message}</span>`;
+      }
+    });
+
+    clearBtn.addEventListener("click", () => {
+      inputEl.value = "";
+      resultEl.innerHTML = "";
+      inputEl.focus();
+    });
+
+    examplesBtn.addEventListener("click", () => {
+      const samples = ["16", "20", "2", "3/4", "5.75", "121", "7/3"];
+      const pick = samples[Math.floor(Math.random() * samples.length)];
+      inputEl.value = pick;
+      calcBtn.click();
+    });
+
+    // اجرای اولیه با یک مثال
+    inputEl.value = "20";
+    calcBtn.click();
   </script>
 </body>
 </html>
